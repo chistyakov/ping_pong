@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  service_a:
+    build:
+      context: .
+      target: prod
+    command: service_a
+    ports:
+      - "5001:5001"
+    environment:
+      PORT: 5001
+      LOG_CONFIG: logging_config.json
+      SERVICE_B_BASE_URL: http://service_b:5002
+
+  service_b:
+    build:
+      context: .
+      target: prod
+    command: service_b
+    ports:
+      - "5002:5002"
+    environment:
+      PORT: 5002
+      LOG_CONFIG: logging_config.json
+      SERVICE_A_BASE_URL: http://service_a:5001
