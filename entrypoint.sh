@@ -9,11 +9,11 @@ cd ./ping_pong/src
 case $firstarg in
 
   "service_a")
-    python -m service_a "$@"
+    uvicorn service_a:app --port 5001 --host 0.0.0.0 --log-config=../../logging_config.json "$@"
     ;;
 
   "service_b")
-    python -m service_b "$@"
+    uvicorn service_b:app --port 5002 --host 0.0.0.0 --log-config=../../logging_config.json "$@"
     ;;
 
   "tests")
@@ -23,7 +23,7 @@ case $firstarg in
 
   "format")
     echo "run format"
-    black . "$@"
+    black ../ "$@"
     ;;
 
   "static_check")
@@ -31,7 +31,7 @@ case $firstarg in
     echo "run black"
     black --check .
     echo "run mypy"
-    mypy .
+    mypy $(pwd)
     ;;
 
   *)

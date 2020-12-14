@@ -6,6 +6,7 @@ ENTRYPOINT ["./entrypoint.sh"]
 
 FROM base as prod
 COPY entrypoint.sh .
+COPY logging_config.json .
 COPY ping_pong/src ping_pong/src
 
 FROM base as dev
