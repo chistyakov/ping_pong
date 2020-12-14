@@ -41,3 +41,19 @@
 * Ссылка на gitlab/github репозиторий с реализацией pipeline. \
   Рекомендуем писать код с расчетом запуска в Docker контейнерах. 
 * В репозитории должен лежать README.md файл с описанием подхода к отладке.
+
+# How to run
+```bash
+make service_a
+make service_b
+
+# run tests:
+make tests
+
+# static check of code:
+make static_check
+```
+
+# How to debug
+## Having access to source code
+## Without access to source code
