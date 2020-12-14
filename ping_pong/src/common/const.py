@@ -1,0 +1,2 @@
+DIGIT_MIN = 0
+DIGIT_MAX = 100

@@ -1,25 +1,45 @@
-from base import anything
-from test_service_a.base import BaseServiceA
+from test_service_b.base import BaseServiceB
 
 
-class TestPing(BaseServiceA):
-    def test_ping_empty_list(self):
-        response = self.client.post("/ping", json={"digits": []})
+class TestPong(BaseServiceB):
+    def test_empty_list(self):
+        response = self.client.post("/pong", json={"digits": []})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"digits": [anything]})
+        self.assertEqual(
+            response.json(), {"digits": [], "avg": None, "min": None, "max": None}
+        )
 
-    def test_ping_single_item(self):
-        response = self.client.post("/ping", json={"digits": [42]})
+    def test_single_item(self):
+        response = self.client.post("/pong", json={"digits": [42]})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"digits": [42, anything]})
+        self.assertEqual(
+            response.json(), {"digits": [42], "avg": 42, "min": 42, "max": 42}
+        )
+
+    def test_two_items(self):
+        response = self.client.post("/pong", json={"digits": [2, 1]})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"digits": [2, 1], "avg": 1.5, "min": 1, "max": 2}
+        )
+
+    def test_three_items(self):
+        response = self.client.post("/pong", json={"digits": [2, 1, 2]})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {"digits": [2, 1, 2], "avg": 1.6666666666666667, "min": 1, "max": 2},
+        )
 
     def test_missing_list(self):
-        response = self.client.post("/ping", json={})
+        response = self.client.post("/pong", json={})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"digits": [anything]})
+        self.assertEqual(
+            response.json(), {"digits": [], "avg": None, "min": None, "max": None}
+        )
 
     def test_invalid_not_list(self):
-        response = self.client.post("/ping", json={"digits": 1})
+        response = self.client.post("/pong", json={"digits": "foo"})
         self.assertEqual(response.status_code, 422)
         self.assertEqual(
             response.json(),
@@ -35,7 +55,7 @@ class TestPing(BaseServiceA):
         )
 
     def test_invalid_not_int(self):
-        response = self.client.post("/ping", json={"digits": [1, "a"]})
+        response = self.client.post("/pong", json={"digits": [1, "a"]})
         self.assertEqual(response.status_code, 422)
         self.assertEqual(
             response.json(),
@@ -51,7 +71,7 @@ class TestPing(BaseServiceA):
         )
 
     def test_invalid_not_in_range(self):
-        response = self.client.post("/ping", json={"digits": [101]})
+        response = self.client.post("/pong", json={"digits": [101]})
         self.assertEqual(response.status_code, 422)
         self.assertEqual(
             response.json(),
