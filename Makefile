@@ -9,6 +9,10 @@ down :
 logs :
 	docker-compose logs -f
 
+attach:
+	docker attach ${SERVICE} --detach-keys ctrl-c
+
+
 tests : build_dev
 	docker run --rm --name tests ping_pong_dev tests
 

@@ -12,6 +12,7 @@ services:
       PORT: 5001
       LOG_CONFIG: logging_config.json
       SERVICE_B_BASE_URL: http://service_b:5002
+    container_name: service_a
 
   service_b:
     build:
@@ -24,3 +25,4 @@ services:
       PORT: 5002
       LOG_CONFIG: logging_config.json
       SERVICE_A_BASE_URL: http://service_a:5001
+    container_name: service_b

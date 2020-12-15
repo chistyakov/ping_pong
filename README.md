@@ -44,8 +44,7 @@
 
 # How to run
 ```bash
-make service_a
-make service_b
+make up
 
 # run tests:
 make tests
