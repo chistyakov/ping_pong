@@ -17,12 +17,12 @@
             "formatter": "default",
             "class": "logging.StreamHandler",
             "stream": "ext://sys.stdout",
-            "filters": ["x_request_id", "x_correlation_id"]
+            "filters": ["x_correlation_id", "x_request_id"]
         }
     },
     "formatters": {
         "default": {
-            "format": "%(asctime)s [%(levelname)s] %(x_request_id)s %(x_correlation_id)s %(name)s: %(message)s"
+            "format": "%(asctime)s [%(levelname)s] %(x_correlation_id)s %(x_request_id)s %(name)s: %(message)s"
         }
     },
     "filters": {

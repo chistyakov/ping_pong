@@ -21,8 +21,13 @@ class TracingRoute(APIRoute):
             logger.debug("Request\n%s %s\n%s", request.method, request.url, payload)
             try:
                 response = await original_route_handler(request)
-            except RequestValidationError:
-                logger.exception("Error handling %s %s", request.method, request.url)
+            except RequestValidationError as exc:
+                logger.info(
+                    "Validation error handling %s %s\n%s",
+                    request.method,
+                    request.url,
+                    exc.json(),
+                )
                 raise
             else:
                 logger.debug(
