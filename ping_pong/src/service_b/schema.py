@@ -3,7 +3,7 @@ from typing import Optional, List
 from pydantic import BaseModel
 
 
-class DigitsAvgMinMax(BaseModel):
+class DigitsOutput(BaseModel):
     digits: Optional[List[int]]
     avg: Optional[float]
     min: Optional[int]

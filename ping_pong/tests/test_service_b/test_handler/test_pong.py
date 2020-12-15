@@ -64,3 +64,20 @@ class TestPongValidation(BaseServiceB):
                 ]
             },
         )
+
+    def test_invalid_last_digit(self):
+        with TestClient(self.app) as client:
+            response = client.post("/pong", json={"digits": [10, 9]})
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(
+            response.json(),
+            {
+                "detail": [
+                    {
+                        "loc": ["body", "digits"],
+                        "msg": "Last digit in [10, 9] is invalid",
+                        "type": "assertion_error",
+                    }
+                ]
+            },
+        )

@@ -1,13 +1,15 @@
+import logging
 from contextvars import ContextVar, Token
 from uuid import uuid4
-import logging
 
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.requests import Request
+from starlette.responses import Response
 
 _x_request_id: ContextVar[str] = ContextVar("x_request_id")
 
 
-def get_x_request_id():
+def get_x_request_id() -> str:
     return _x_request_id.get("NO-X-REQUEST-ID")
 
 
@@ -20,7 +22,9 @@ def reset_x_request_id(token: Token):
 
 
 class XRequestIdMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request, call_next):
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
         x_request_id = str(uuid4())
         token = set_x_request_id(x_request_id)
         response = await call_next(request)
@@ -30,6 +34,6 @@ class XRequestIdMiddleware(BaseHTTPMiddleware):
 
 
 class XRequestIdFilter(logging.Filter):
-    def filter(self, record):
+    def filter(self, record) -> bool:
         record.x_request_id = get_x_request_id()
         return True
