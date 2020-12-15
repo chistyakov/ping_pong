@@ -1,6 +1,5 @@
 import unittest
 
-from base import anything
 from service_b.core import get_avg_min_max
 
 
