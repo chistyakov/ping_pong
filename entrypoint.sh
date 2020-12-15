@@ -9,11 +9,11 @@ cd ./ping_pong/src
 case $firstarg in
 
   "service_a")
-    uvicorn service_a:app --port $PORT --host 0.0.0.0 --log-config=../../$LOG_CONFIG "$@"
+    uvicorn --factory service_a.main:create_app --port $PORT --host 0.0.0.0 --log-config=../../$LOG_CONFIG "$@"
     ;;
 
   "service_b")
-    uvicorn service_b:app --port $PORT --host 0.0.0.0 --log-config=../../$LOG_CONFIG "$@"
+    uvicorn --factory service_b.main:create_app --port $PORT --host 0.0.0.0 --log-config=../../$LOG_CONFIG "$@"
     ;;
 
   "tests")
