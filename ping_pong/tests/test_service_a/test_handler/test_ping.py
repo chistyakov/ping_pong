@@ -11,12 +11,8 @@ class TestPing(BaseServiceA):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"digits": [anything]})
 
-    def test_ping_single_item(self):
-        with TestClient(self.app) as client:
-            response = client.post("/ping", json={"digits": [42]})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"digits": [42, anything]})
 
+class TestPingValidation(BaseServiceA):
     def test_missing_list(self):
         with TestClient(self.app) as client:
             response = client.post("/ping", json={})

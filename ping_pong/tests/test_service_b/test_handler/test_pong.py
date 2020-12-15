@@ -4,14 +4,6 @@ from test_service_b.base import BaseServiceB
 
 
 class TestPong(BaseServiceB):
-    def test_empty_list(self):
-        with TestClient(self.app) as client:
-            response = client.post("/pong", json={"digits": []})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(), {"digits": [], "avg": None, "min": None, "max": None}
-        )
-
     def test_single_item(self):
         with TestClient(self.app) as client:
             response = client.post("/pong", json={"digits": [42]})
@@ -20,31 +12,8 @@ class TestPong(BaseServiceB):
             response.json(), {"digits": [42], "avg": 42, "min": 42, "max": 42}
         )
 
-    def test_two_items(self):
-        with TestClient(self.app) as client:
-            response = client.post("/pong", json={"digits": [2, 1]})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(), {"digits": [2, 1], "avg": 1.5, "min": 1, "max": 2}
-        )
 
-    def test_three_items(self):
-        with TestClient(self.app) as client:
-            response = client.post("/pong", json={"digits": [2, 1, 2]})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(),
-            {"digits": [2, 1, 2], "avg": 1.6666666666666667, "min": 1, "max": 2},
-        )
-
-    def test_missing_list(self):
-        with TestClient(self.app) as client:
-            response = client.post("/pong", json={})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(), {"digits": [], "avg": None, "min": None, "max": None}
-        )
-
+class TestPongValidation(BaseServiceB):
     def test_invalid_not_list(self):
         with TestClient(self.app) as client:
             response = client.post("/pong", json={"digits": "foo"})
