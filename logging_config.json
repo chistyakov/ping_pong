@@ -5,6 +5,10 @@
         "root": {
             "handlers": ["default"],
             "level": "DEBUG"
+        },
+        "uvicorn.access": {
+            "handlers": [],
+            "propagate": false
         }
     },
     "handlers": {
@@ -12,12 +16,21 @@
             "level": "DEBUG",
             "formatter": "default",
             "class": "logging.StreamHandler",
-            "stream": "ext://sys.stdout"
+            "stream": "ext://sys.stdout",
+            "filters": ["x_request_id", "x_correlation_id"]
         }
     },
     "formatters": {
         "default": {
-            "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+            "format": "%(asctime)s [%(levelname)s] %(x_request_id)s %(x_correlation_id)s %(name)s: %(message)s"
+        }
+    },
+    "filters": {
+        "x_request_id": {
+            "()": "common.tracing.x_request_id.XRequestIdFilter"
+        },
+        "x_correlation_id": {
+            "()": "common.tracing.x_correlation_id.XCorrelationIdFilter"
         }
     }
 }
