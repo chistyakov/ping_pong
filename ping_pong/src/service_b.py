@@ -6,24 +6,13 @@ from fastapi import FastAPI
 from fastapi.param_functions import Depends
 from pydantic import BaseModel
 from starlette.background import BackgroundTasks
-from starlette.requests import Request
 
+from common.aiohttp_client import setup_http_client, aiohttp_client
 from common.schema import DigitsIn
 
 
-async def on_start_up():
-    app.state.aiohttp_client = aiohttp.ClientSession()
-
-
-async def on_shutdown():
-    await app.state.aiohttp_client.close()
-
-
-async def aiohttp_client(request: Request) -> aiohttp.ClientSession:
-    return request.app.state.aiohttp_client
-
-
-app = FastAPI(on_startup=[on_start_up], on_shutdown=[on_shutdown])
+app = FastAPI()
+app = setup_http_client(app)
 
 
 async def ping(digits: DigitsIn, aiohttp_client: aiohttp.ClientSession) -> None:
