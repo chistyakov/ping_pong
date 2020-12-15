@@ -1,25 +1,31 @@
+from starlette.testclient import TestClient
+
 from base import anything
 from test_service_a.base import BaseServiceA
 
 
 class TestPing(BaseServiceA):
     def test_ping_empty_list(self):
-        response = self.client.post("/ping", json={"digits": []})
+        with TestClient(self.app) as client:
+            response = client.post("/ping", json={"digits": []})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"digits": [anything]})
 
     def test_ping_single_item(self):
-        response = self.client.post("/ping", json={"digits": [42]})
+        with TestClient(self.app) as client:
+            response = client.post("/ping", json={"digits": [42]})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"digits": [42, anything]})
 
     def test_missing_list(self):
-        response = self.client.post("/ping", json={})
+        with TestClient(self.app) as client:
+            response = client.post("/ping", json={})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"digits": [anything]})
 
     def test_invalid_not_list(self):
-        response = self.client.post("/ping", json={"digits": 1})
+        with TestClient(self.app) as client:
+            response = client.post("/ping", json={"digits": 1})
         self.assertEqual(response.status_code, 422)
         self.assertEqual(
             response.json(),
@@ -35,7 +41,8 @@ class TestPing(BaseServiceA):
         )
 
     def test_invalid_not_int(self):
-        response = self.client.post("/ping", json={"digits": [1, "a"]})
+        with TestClient(self.app) as client:
+            response = client.post("/ping", json={"digits": [1, "a"]})
         self.assertEqual(response.status_code, 422)
         self.assertEqual(
             response.json(),
@@ -51,7 +58,8 @@ class TestPing(BaseServiceA):
         )
 
     def test_invalid_not_in_range(self):
-        response = self.client.post("/ping", json={"digits": [101]})
+        with TestClient(self.app) as client:
+            response = client.post("/ping", json={"digits": [101]})
         self.assertEqual(response.status_code, 422)
         self.assertEqual(
             response.json(),
