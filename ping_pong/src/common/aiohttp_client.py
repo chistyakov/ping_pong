@@ -6,11 +6,10 @@ from aiohttp import ClientSession, TraceRequestStartParams, TraceRequestEndParam
 from fastapi import FastAPI
 from starlette.requests import Request
 
-
 logger = logging.getLogger(__name__)
 
 
-async def aiohttp_client(request: Request) -> aiohttp.ClientSession:
+async def aiohttp_client_dep(request: Request) -> aiohttp.ClientSession:
     return request.app.state.aiohttp_client
 
 

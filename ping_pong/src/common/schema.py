@@ -38,3 +38,7 @@ def is_digit_valid(digit: int) -> bool:
 
 class DigitsOutput(BaseModel):
     digits: List[int]
+
+
+class ResponseHistoryOutput(BaseModel):
+    items: List[dict]

@@ -1,5 +1,6 @@
 import json
 import logging
+from json.decoder import JSONDecodeError
 from typing import Callable
 
 from fastapi.exceptions import RequestValidationError
@@ -17,7 +18,10 @@ class TracingRoute(APIRoute):
         original_route_handler = super().get_route_handler()
 
         async def custom_route_handler(request: Request) -> Response:
-            payload = await request.json()
+            try:
+                payload = await request.json()
+            except JSONDecodeError:
+                payload = ""
             logger.debug("Request\n%s %s\n%s", request.method, request.url, payload)
             try:
                 response = await original_route_handler(request)
