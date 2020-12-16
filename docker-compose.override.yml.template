@@ -18,3 +18,20 @@ version: '3.9'
 #   service_a:
 #     volumes:
 #       - ./ping_pong:/app/ping_pong
+
+services:
+  service_a:
+    stdin_open: true
+    tty: true
+
+    volumes:
+      - ./ping_pong:/app/ping_pong
+    command: ["service_a", "--reload"]
+
+  service_b:
+    stdin_open: true
+    tty: true
+
+    volumes:
+      - ./ping_pong:/app/ping_pong
+    command: ["service_b", "--reload"]

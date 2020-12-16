@@ -1,8 +1,5 @@
 version: '3.9'
 
-# copy this file to docker-compose.override.yml
-# and make changes
-
 services:
   service_a:
     stdin_open: true

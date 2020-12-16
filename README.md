@@ -43,17 +43,77 @@
   Рекомендуем писать код с расчетом запуска в Docker контейнерах. 
 * В репозитории должен лежать README.md файл с описанием подхода к отладке.
 
+# Changes in requirements
+Не получил ответа на уточнения в требованиях. Изменил реализацию, исходя из здравого смысла:
+* Сервис B отправляет в сервис A массив digits.
+* В условии про валидацию данных используется последнее число из массива digits.
+* При ошибке валидации возвращается не 400, а 422 ошибка
+
 # How to run
 ```bash
 make up
-
-# run tests:
-make tests
-
-# static check of code:
-make static_check
+curl -i -X POST "http://127.0.0.1:5001/ping" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"digits\":[42]}"
+make logs
 ```
 
 # How to debug
-## Having access to source code
-## Without access to source code
+## Когда есть доступ до кода (разработчику)
+Запуск автотестов
+```bash
+make tests
+```
+
+Запуск статического анализа кода
+```bash
+make static_check
+```
+
+Подключение дебаггера
+```bash
+cp docker-compose.override.yml.template docker-compose.override.yml
+# insert 'import pdb; pdb.set_trace()' in code
+make up
+make attach SERVICE=service_a
+```
+
+Настройка хот-релода кода:
+```bash
+cp docker-compose.override.yml.template docker-compose.override.yml
+make up
+make restart
+```
+
+Перезапуск:
+```bash
+make down
+make up
+```
+
+## Когда нет доступа до кода (QA)
+Swagger для service_a: http://127.0.0.1:5001/docs
+
+Swagger для service_b: http://127.0.0.1:5002/docs
+
+Просмотр логов:
+```bash
+make logs
+# одного сервиса
+make logs SERVICE=service_a
+```
+
+Настройка логов: logging_config.json
+
+В ответе на HTTP-запросы к сервисам возвращается заголовок `X-Correlation-Id`.\
+У цепочки запросов будет один `X-Correlation-Id`.\
+Если заголовок не передан, то сервис сгенерирует его.\
+В системе аггрегации логов можно фильтровать все запросы по `X-Correlation-Id`.\
+В Swagger документе есть возможность передавать заголовок `X-Correlation-Id`.\
+Логгируются запросы и ответы, получаемые и отправляемые сервисами.
+
+# Further development
+* Если необходимо выполнять более сложные вычисления в сервисе B, то можно переиспользовать предыдущий шаг вычислений.\
+  Для этого можно считать некриптографический хэш от digits (например, xxhash). Расчитанные значения положить в хэш-мэп. На следущем шаге попробовать получить предыдущие расчитанные значения, применив хэш-функцию к массиву digits без последнего элемента.
+
+* Объединить Swagger-документации двух сервисов в одну. Улучшить описание.
+  
+* Добавить отправку в Sentry необработанных ошибок.
